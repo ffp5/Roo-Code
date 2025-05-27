@@ -128,7 +128,7 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 				throw new Error("MakeHub: Invalid API key. Please check your API key configuration.")
 			} else if (error.response?.status === 403) {
 				throw new Error("MakeHub: Access forbidden. Please check your API key permissions.")
-			} else if (error.response?.status >= 500) {
+			} else if (error.response && error.response.status >= 500) {
 				throw new Error("MakeHub: Server error. Please try again later.")
 			} else if (error.code === "ECONNABORTED") {
 				throw new Error("MakeHub: Request timeout. Please check your internet connection.")
