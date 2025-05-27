@@ -317,8 +317,21 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 				{ key: "requesty", options: { provider: "requesty", apiKey: apiConfiguration.requestyApiKey } },
 				{ key: "glama", options: { provider: "glama" } },
 				{ key: "unbound", options: { provider: "unbound", apiKey: apiConfiguration.unboundApiKey } },
-				{ key: "makehub", options: { provider: "makehub", apiKey: apiConfiguration.makehubApiKey } },
 			]
+
+			// Add MakeHub with proper API key handling
+			if (apiConfiguration.makehubApiKey) {
+				modelFetchPromises.push({
+					key: "makehub",
+					options: { provider: "makehub", apiKey: apiConfiguration.makehubApiKey },
+				})
+			} else {
+				// MakeHub can work without API key, but with limited access
+				modelFetchPromises.push({
+					key: "makehub",
+					options: { provider: "makehub" },
+				})
+			}
 
 			const litellmApiKey = apiConfiguration.litellmApiKey || message?.values?.litellmApiKey
 			const litellmBaseUrl = apiConfiguration.litellmBaseUrl || message?.values?.litellmBaseUrl

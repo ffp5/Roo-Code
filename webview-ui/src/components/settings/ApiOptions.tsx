@@ -402,7 +402,12 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "makehub" && (
-				<MakeHub apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<MakeHub
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					refetchRouterModels={refetchRouterModels}
+				/>
 			)}
 
 			{selectedProvider === "human-relay" && (

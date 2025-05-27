@@ -39,10 +39,6 @@ export const MakeHub = ({
 
 	const perfRatio = apiConfiguration?.makehubPerfRatio ?? 0.5
 
-	// Get all available models
-	const models = routerModels?.makehub || {}
-	const modelEntries = Object.entries(models).sort(([idA], [idB]) => idA.localeCompare(idB))
-
 	return (
 		<>
 			<VSCodeTextField
@@ -109,8 +105,8 @@ export const MakeHub = ({
 				<VSCodeDropdown
 					value={apiConfiguration?.makehubModelId || makehubDefaultModelId}
 					style={{ width: "100%" }}>
-					{modelEntries.length > 0 ? (
-						modelEntries.map(([id, info]) => (
+					{Object.entries(routerModels?.makehub ?? {}).length > 0 ? (
+						Object.entries(routerModels?.makehub ?? {}).map(([id, info]) => (
 							<VSCodeOption
 								key={id}
 								value={id}
@@ -123,27 +119,30 @@ export const MakeHub = ({
 					)}
 				</VSCodeDropdown>
 
-				{modelEntries.length === 0 && (
+				{Object.entries(routerModels?.makehub ?? {}).length === 0 && (
 					<div className="text-sm text-vscode-descriptionForeground mt-2">
 						{t("settings:providers.noModelsFound", { provider: "MakeHub" })}
 					</div>
 				)}
 
-				{apiConfiguration?.makehubModelId && models[apiConfiguration.makehubModelId] && (
+				{apiConfiguration?.makehubModelId && routerModels?.makehub?.[apiConfiguration.makehubModelId] && (
 					<div className="mt-2 text-sm">
 						<div className="flex justify-between">
 							<span>{t("settings:modelInfo.contextWindow")}:</span>
-							<span>{models[apiConfiguration.makehubModelId].contextWindow.toLocaleString()} tokens</span>
+							<span>
+								{routerModels.makehub[apiConfiguration.makehubModelId].contextWindow.toLocaleString()}{" "}
+								tokens
+							</span>
 						</div>
 						<div className="flex justify-between">
 							<span>{t("settings:modelInfo.inputPrice")}:</span>
-							<span>${models[apiConfiguration.makehubModelId].inputPrice}/M tokens</span>
+							<span>${routerModels.makehub[apiConfiguration.makehubModelId].inputPrice}/M tokens</span>
 						</div>
 						<div className="flex justify-between">
 							<span>{t("settings:modelInfo.outputPrice")}:</span>
-							<span>${models[apiConfiguration.makehubModelId].outputPrice}/M tokens</span>
+							<span>${routerModels.makehub[apiConfiguration.makehubModelId].outputPrice}/M tokens</span>
 						</div>
-						{models[apiConfiguration.makehubModelId].supportsImages && (
+						{routerModels.makehub[apiConfiguration.makehubModelId].supportsImages && (
 							<div className="flex justify-between">
 								<span>{t("settings:modelInfo.supportsImages")}</span>
 								<span>{t("settings:common.yes")}</span>

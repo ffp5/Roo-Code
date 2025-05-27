@@ -57,46 +57,40 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 		}
 
 		// Add Authorization header if API key is provided
-		if (apiKey) {
-			headers.Authorization = `Bearer ${apiKey}`
+		if (apiKey && apiKey.trim()) {
+			headers.Authorization = `Bearer ${apiKey.trim()}`
 		}
 
 		const response = await axios.get<MakehubModelResponse>(`${MAKEHUB_BASE_URL}/models`, {
 			headers,
-			timeout: 10000,
+			timeout: 15000,
 		})
 
 		if (!response.data?.data) {
-			console.error("Invalid MakeHub API response format:", response.data)
-			return {}
+			console.error("MakeHub: Invalid API response format:", response.data)
+			throw new Error("Invalid API response format from MakeHub")
 		}
 
 		const modelRecord: ModelRecord = {}
 
 		for (const model of response.data.data) {
-			if (!model.model_id || !model.assistant_ready) continue
+			if (!model.model_id || !model.assistant_ready) {
+				continue
+			}
 
 			// Create a model ID that includes provider information
-			// Use just the model_id as provided by the API, since it already has the proper format
 			const fullModelId = model.model_id.includes("/")
 				? model.model_id // Already has organization format
 				: `${model.organisation}/${model.model_id}` // Add organization prefix
 
-			// Log the raw price values from the API for debugging
-			console.log(`Model ${fullModelId} raw prices:`, {
-				input: model.price_per_input_token,
-				output: model.price_per_output_token,
-			})
-
-			// MakeHub API returns prices already in cost per million tokens,
-			// so we can use them directly without further conversion
-			const inputPrice = model.price_per_input_token
-			const outputPrice = model.price_per_output_token
-
-			console.log(`Model ${fullModelId} stored prices:`, {
-				input: inputPrice,
-				output: outputPrice,
-			})
+			// Validate pricing data
+			if (typeof model.price_per_input_token !== "number" || typeof model.price_per_output_token !== "number") {
+				console.warn(`MakeHub: Invalid pricing for model ${fullModelId}`, {
+					input: model.price_per_input_token,
+					output: model.price_per_output_token,
+				})
+				continue
+			}
 
 			modelRecord[fullModelId] = {
 				maxTokens: model.max_tokens ?? undefined,
@@ -104,8 +98,8 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 				supportsImages: model.capabilities?.image_input ?? false,
 				supportsComputerUse: model.capabilities?.tool_calling ?? false,
 				supportsPromptCache: model.supports_prompt_cache ?? false,
-				inputPrice: inputPrice,
-				outputPrice: outputPrice,
+				inputPrice: model.price_per_input_token,
+				outputPrice: model.price_per_output_token,
 				cacheWritesPrice: model.cache_writes_price,
 				cacheReadsPrice: model.cache_reads_price,
 				description: model.display_name,
@@ -121,11 +115,26 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 
 		return modelRecord
 	} catch (error) {
-		console.error("Error fetching MakeHub models:", error)
+		console.error("MakeHub: Error fetching models:", error)
 		if (axios.isAxiosError(error)) {
-			console.error("Response:", error.response?.data)
-			console.error("Status:", error.response?.status)
+			console.error("MakeHub: HTTP Error Details:", {
+				status: error.response?.status,
+				statusText: error.response?.statusText,
+				data: error.response?.data,
+				hasApiKey: !!apiKey,
+			})
+
+			if (error.response?.status === 401) {
+				throw new Error("MakeHub: Invalid API key. Please check your API key configuration.")
+			} else if (error.response?.status === 403) {
+				throw new Error("MakeHub: Access forbidden. Please check your API key permissions.")
+			} else if (error.response?.status >= 500) {
+				throw new Error("MakeHub: Server error. Please try again later.")
+			} else if (error.code === "ECONNABORTED") {
+				throw new Error("MakeHub: Request timeout. Please check your internet connection.")
+			}
 		}
-		return {}
+
+		throw new Error(`MakeHub: Failed to fetch models - ${error.message || "Unknown error"}`)
 	}
 }

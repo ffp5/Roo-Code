@@ -34,8 +34,7 @@ export class MakeHubHandler extends RouterProvider {
 
 	override async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
 		this.lastGenerationId = undefined
-		await this.fetchModel()
-		const { id: modelId, info: modelInfo } = this.getModel()
+		const { id: modelId, info: modelInfo } = await this.fetchModel()
 
 		// Convert messages to OpenAI format
 		let openAiMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
@@ -95,8 +94,6 @@ export class MakeHubHandler extends RouterProvider {
 
 			// Handle usage statistics if present
 			if (!didOutputUsage && chunk.usage) {
-				console.log("MakeHub usage data received:", chunk.usage)
-
 				// Validate token counts to prevent unreasonable values
 				const promptTokens = chunk.usage.prompt_tokens || 0
 				const completionTokens = chunk.usage.completion_tokens || 0
@@ -129,49 +126,40 @@ export class MakeHubHandler extends RouterProvider {
 	 * Calculate cost based on input and output tokens
 	 */
 	private calculateCost(inputTokens: number, outputTokens: number, modelInfo: any): number {
-		// Log the input values for debugging
-		console.log("MakeHub cost calculation inputs:", {
-			inputTokens,
-			outputTokens,
-			modelInfoPrices: {
-				inputPrice: modelInfo.inputPrice,
-				outputPrice: modelInfo.outputPrice,
-			},
-		})
-
-		// MakeHub API returns prices already in dollars per million tokens,
-		// so we just need to divide tokens by 1,000,000 to get the correct cost
-		const inputCost = (inputTokens / 1_000_000) * (modelInfo.inputPrice || 0)
-		const outputCost = (outputTokens / 1_000_000) * (modelInfo.outputPrice || 0)
-
-		let totalCost = inputCost + outputCost
-
-		// Safety check: If the cost is unreasonably high (over $100),
-		// it's likely there's a calculation error, so apply a scaling factor
-		// This is a temporary fix until we can determine the exact cause
-		if (totalCost > 100) {
-			console.warn("MakeHub cost exceeds $100, applying safety scaling factor")
-			// Apply a scaling factor to bring it to a reasonable range
-			// Assuming a typical conversation shouldn't cost more than a few dollars
-			totalCost = totalCost / 10000
+		// Validate inputs
+		if (!modelInfo || typeof modelInfo.inputPrice !== "number" || typeof modelInfo.outputPrice !== "number") {
+			console.warn("MakeHub: Invalid model pricing information", { modelInfo })
+			return 0
 		}
 
-		// Log the calculated costs for debugging
-		console.log("MakeHub cost calculation result:", {
-			inputTokens: inputTokens,
-			outputTokens: outputTokens,
-			inputPrice: modelInfo.inputPrice,
-			outputPrice: modelInfo.outputPrice,
-			inputCost,
-			outputCost,
-			totalCost,
-		})
+		if (inputTokens < 0 || outputTokens < 0) {
+			console.warn("MakeHub: Invalid token counts", { inputTokens, outputTokens })
+			return 0
+		}
 
-		return totalCost
+		// MakeHub API returns prices in dollars per million tokens
+		const inputCost = (inputTokens / 1_000_000) * modelInfo.inputPrice
+		const outputCost = (outputTokens / 1_000_000) * modelInfo.outputPrice
+		const totalCost = inputCost + outputCost
+
+		// Log for debugging only if cost seems unusual
+		if (totalCost > 10) {
+			console.log("MakeHub high cost calculation:", {
+				inputTokens,
+				outputTokens,
+				inputPrice: modelInfo.inputPrice,
+				outputPrice: modelInfo.outputPrice,
+				inputCost,
+				outputCost,
+				totalCost,
+			})
+		}
+
+		return Math.max(0, totalCost)
 	}
 
 	protected override supportsTemperature(modelId: string): boolean {
-		const model = this.models[modelId]
-		return model?.supportsImages ?? false
+		// Most models support temperature, but exclude o3-mini variants like OpenAI
+		return !modelId.toLowerCase().includes("o3-mini")
 	}
 }
