@@ -32,6 +32,7 @@ body:
         - Human Relay Provider
         - LiteLLM
         - LM Studio
+        - MakeHub
         - Mistral AI
         - Ollama
         - OpenAI

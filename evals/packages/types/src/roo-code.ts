@@ -25,6 +25,7 @@ export const providerNames = [
 	"human-relay",
 	"fake-ai",
 	"xai",
+	"makehub",
 ] as const
 
 export const providerNamesSchema = z.enum(providerNames)
@@ -478,6 +479,11 @@ const litellmSchema = z.object({
 	litellmModelId: z.string().optional(),
 })
 
+const makehubSchema = z.object({
+	makehubApiKey: z.string().optional(),
+	makehubModelId: z.string().optional(),
+})
+
 const defaultSchema = z.object({
 	apiProvider: z.undefined(),
 })
@@ -589,6 +595,11 @@ export const providerSettingsSchemaDiscriminated = z
 				apiProvider: z.literal("litellm"),
 			}),
 		),
+		makehubSchema.merge(
+			z.object({
+				apiProvider: z.literal("makehub"),
+			}),
+		),
 		defaultSchema,
 	])
 	.and(genericProviderSettingsSchema)
@@ -617,6 +628,7 @@ export const providerSettingsSchema = z.object({
 	...chutesSchema.shape,
 	...litellmSchema.shape,
 	...genericProviderSettingsSchema.shape,
+	...makehubSchema.shape,
 })
 
 export type ProviderSettings = z.infer<typeof providerSettingsSchema>
@@ -716,6 +728,9 @@ const providerSettingsRecord: ProviderSettingsRecord = {
 	litellmBaseUrl: undefined,
 	litellmApiKey: undefined,
 	litellmModelId: undefined,
+	// MakeHub
+	makehubApiKey: undefined,
+	makehubModelId: undefined,
 }
 
 export const PROVIDER_SETTINGS_KEYS = Object.keys(providerSettingsRecord) as Keys<ProviderSettings>[]
@@ -910,6 +925,7 @@ export type SecretState = Pick<
 	| "unboundApiKey"
 	| "requestyApiKey"
 	| "xaiApiKey"
+	| "makehubApiKey"
 >
 
 type SecretStateRecord = Record<Keys<SecretState>, undefined>
@@ -929,6 +945,7 @@ const secretStateRecord: SecretStateRecord = {
 	unboundApiKey: undefined,
 	requestyApiKey: undefined,
 	xaiApiKey: undefined,
+	makehubApiKey: undefined,
 }
 
 export const SECRET_STATE_KEYS = Object.keys(secretStateRecord) as Keys<SecretState>[]

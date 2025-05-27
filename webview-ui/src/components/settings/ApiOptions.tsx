@@ -11,6 +11,7 @@ import {
 	glamaDefaultModelId,
 	unboundDefaultModelId,
 	litellmDefaultModelId,
+	makehubDefaultModelId,
 } from "@roo/api"
 
 import { vscode } from "@src/utils/vscode"
@@ -30,6 +31,7 @@ import {
 	Groq,
 	LMStudio,
 	LiteLLM,
+	MakeHub,
 	Mistral,
 	Ollama,
 	OpenAI,
@@ -225,6 +227,11 @@ const ApiOptions = ({
 						setApiConfigurationField("litellmModelId", litellmDefaultModelId)
 					}
 					break
+				case "makehub":
+					if (!apiConfiguration.makehubModelId) {
+						setApiConfigurationField("makehubModelId", makehubDefaultModelId)
+					}
+					break
 			}
 
 			setApiConfigurationField("apiProvider", value)
@@ -236,6 +243,7 @@ const ApiOptions = ({
 			apiConfiguration.unboundModelId,
 			apiConfiguration.requestyModelId,
 			apiConfiguration.litellmModelId,
+			apiConfiguration.makehubModelId,
 		],
 	)
 
@@ -391,6 +399,10 @@ const ApiOptions = ({
 
 			{selectedProvider === "litellm" && (
 				<LiteLLM apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "makehub" && (
+				<MakeHub apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "human-relay" && (

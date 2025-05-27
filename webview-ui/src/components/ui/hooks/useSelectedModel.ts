@@ -30,6 +30,7 @@ import {
 	glamaDefaultModelId,
 	unboundDefaultModelId,
 	litellmDefaultModelId,
+	makehubDefaultModelId,
 } from "@roo/api"
 
 import { useRouterModels } from "./useRouterModels"
@@ -118,6 +119,13 @@ function getSelectedModel({
 			return info
 				? { id, info }
 				: { id: litellmDefaultModelId, info: routerModels.litellm[litellmDefaultModelId] }
+		}
+		case "makehub": {
+			const id = apiConfiguration.makehubModelId ?? makehubDefaultModelId
+			const info = routerModels.makehub[id]
+			return info
+				? { id, info }
+				: { id: makehubDefaultModelId, info: routerModels.makehub[makehubDefaultModelId] }
 		}
 		case "xai": {
 			const id = apiConfiguration.apiModelId ?? xaiDefaultModelId

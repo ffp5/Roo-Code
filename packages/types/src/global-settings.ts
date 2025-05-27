@@ -217,6 +217,7 @@ export type SecretState = Pick<
 	| "groqApiKey"
 	| "chutesApiKey"
 	| "litellmApiKey"
+	| "makehubApiKey"
 	| "codeIndexOpenAiKey"
 	| "codeIndexQdrantApiKey"
 >
@@ -239,6 +240,7 @@ export const SECRET_STATE_KEYS = keysOf<SecretState>()([
 	"groqApiKey",
 	"chutesApiKey",
 	"litellmApiKey",
+	"makehubApiKey",
 	"codeIndexOpenAiKey",
 	"codeIndexQdrantApiKey",
 ])

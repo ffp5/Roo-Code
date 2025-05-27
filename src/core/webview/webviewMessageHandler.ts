@@ -297,6 +297,7 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 				glama: {},
 				unbound: {},
 				litellm: {},
+				makehub: {},
 			}
 
 			const safeGetModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
@@ -316,6 +317,7 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 				{ key: "requesty", options: { provider: "requesty", apiKey: apiConfiguration.requestyApiKey } },
 				{ key: "glama", options: { provider: "glama" } },
 				{ key: "unbound", options: { provider: "unbound", apiKey: apiConfiguration.unboundApiKey } },
+				{ key: "makehub", options: { provider: "makehub", apiKey: apiConfiguration.makehubApiKey } },
 			]
 
 			const litellmApiKey = apiConfiguration.litellmApiKey || message?.values?.litellmApiKey

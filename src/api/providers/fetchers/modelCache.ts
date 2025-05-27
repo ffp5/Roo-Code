@@ -13,6 +13,7 @@ import { getRequestyModels } from "./requesty"
 import { getGlamaModels } from "./glama"
 import { getUnboundModels } from "./unbound"
 import { getLiteLLMModels } from "./litellm"
+import { getMakehubModels } from "./makehub"
 import { GetModelsOptions } from "../../../shared/api"
 const memoryCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 5 * 60 })
 
@@ -67,6 +68,10 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 			case "litellm":
 				// Type safety ensures apiKey and baseUrl are always provided for litellm
 				models = await getLiteLLMModels(options.apiKey, options.baseUrl)
+				break
+			case "makehub":
+				// Type safety ensures apiKey is always provided for makehub
+				models = await getMakehubModels(options.apiKey)
 				break
 			default: {
 				// Ensures router is exhaustively checked if RouterName is a strict union

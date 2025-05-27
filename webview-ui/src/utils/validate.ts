@@ -81,6 +81,11 @@ export function validateApiConfiguration(apiConfiguration: ProviderSettings): st
 				return i18next.t("settings:validation.modelSelector")
 			}
 			break
+		case "makehub":
+			if (!apiConfiguration.makehubApiKey) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			break
 	}
 
 	return undefined
@@ -144,6 +149,9 @@ export function validateModelId(apiConfiguration: ProviderSettings, routerModels
 			break
 		case "litellm":
 			modelId = apiConfiguration.litellmModelId
+			break
+		case "makehub":
+			modelId = apiConfiguration.makehubModelId
 			break
 	}
 
