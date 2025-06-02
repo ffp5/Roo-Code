@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react"
 import { VSCodeTextField, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import type { ProviderSettings } from "@roo-code/types"
-import { RouterModels, makehubDefaultModelId } from "@roo-code/types"
+import { makehubDefaultModelId } from "@roo-code/types"
+import type { RouterModels } from "@roo/api"
 
 import { vscode } from "@src/utils/vscode"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
