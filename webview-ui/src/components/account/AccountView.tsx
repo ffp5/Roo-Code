@@ -13,7 +13,7 @@ type AccountViewProps = {
 export const AccountView = ({ userInfo, onDone }: AccountViewProps) => {
 	const { t } = useAppTranslation()
 
-	const rooLogoUri = (window as any).IMAGES_BASE_URI + "/roo-logo.svg"
+	const rooLogoUri = (window as any).IMAGES_BASE_URI + "/makehub.svg"
 
 	return (
 		<div className="flex flex-col h-full p-4 bg-vscode-editor-background">
