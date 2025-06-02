@@ -2,10 +2,8 @@ import {
 	type ProviderName,
 	type ProviderSettings,
 	type ModelInfo,
-	anthropicDefaultModelId,
 	anthropicModels,
 	bedrockDefaultModelId,
-	bedrockDefaultPromptRouterModelId,
 	bedrockModels,
 	chutesDefaultModelId,
 	chutesModels,
@@ -47,11 +45,17 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 	const routerModels = useRouterModels()
 	const openRouterModelProviders = useOpenRouterModelProviders(openRouterModelId)
 
+	// Check loading and error states
+	const isLoading = routerModels.isLoading || openRouterModelProviders.isLoading
+	const isError = routerModels.isError || openRouterModelProviders.isError
+
 	if (!apiConfiguration) {
 		return {
 			provider: "makehub" as ProviderName,
 			id: makehubDefaultModelId,
 			info: makehubDefaultModelInfo,
+			isLoading,
+			isError,
 		}
 	}
 
@@ -71,6 +75,8 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 		provider,
 		id,
 		info,
+		isLoading,
+		isError,
 	}
 }
 
