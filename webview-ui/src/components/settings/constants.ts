@@ -27,6 +27,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 }
 
 export const PROVIDERS = [
+	{ value: "makehub", label: "MakeHub" },
 	{ value: "openrouter", label: "OpenRouter" },
 	{ value: "anthropic", label: "Anthropic" },
 	{ value: "gemini", label: "Google Gemini" },
@@ -47,5 +48,4 @@ export const PROVIDERS = [
 	{ value: "groq", label: "Groq" },
 	{ value: "chutes", label: "Chutes AI" },
 	{ value: "litellm", label: "LiteLLM" },
-	{ value: "makehub", label: "MakeHub" },
-].sort((a, b) => a.label.localeCompare(b.label))
+]

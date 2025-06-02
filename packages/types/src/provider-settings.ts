@@ -9,6 +9,7 @@ import { codebaseIndexProviderSchema } from "./codebase-index.js"
  */
 
 export const providerNames = [
+	"makehub",
 	"anthropic",
 	"glama",
 	"openrouter",
@@ -30,7 +31,6 @@ export const providerNames = [
 	"groq",
 	"chutes",
 	"litellm",
-	"makehub",
 ] as const
 
 export const providerNamesSchema = z.enum(providerNames)

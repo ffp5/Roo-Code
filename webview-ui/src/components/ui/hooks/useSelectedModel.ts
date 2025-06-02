@@ -5,32 +5,34 @@ import {
 	anthropicDefaultModelId,
 	anthropicModels,
 	bedrockDefaultModelId,
+	bedrockDefaultPromptRouterModelId,
 	bedrockModels,
+	chutesDefaultModelId,
+	chutesModels,
 	deepSeekDefaultModelId,
 	deepSeekModels,
 	geminiDefaultModelId,
 	geminiModels,
+	glamaDefaultModelId,
+	groqDefaultModelId,
+	groqModels,
+	litellmDefaultModelId,
+	makehubDefaultModelId,
+	makehubDefaultModelInfo,
 	mistralDefaultModelId,
 	mistralModels,
-	openAiModelInfoSaneDefaults,
 	openAiNativeDefaultModelId,
 	openAiNativeModels,
+	openRouterDefaultModelId,
+	requestyDefaultModelId,
+	unboundDefaultModelId,
 	vertexDefaultModelId,
 	vertexModels,
 	xaiDefaultModelId,
 	xaiModels,
-	groqModels,
-	groqDefaultModelId,
-	chutesModels,
-	chutesDefaultModelId,
 	vscodeLlmModels,
 	vscodeLlmDefaultModelId,
-	openRouterDefaultModelId,
-	requestyDefaultModelId,
-	glamaDefaultModelId,
-	unboundDefaultModelId,
-	litellmDefaultModelId,
-	makehubDefaultModelId,
+	openAiModelInfoSaneDefaults,
 } from "@roo-code/types"
 
 import type { RouterModels } from "@roo/api"
@@ -39,11 +41,19 @@ import { useRouterModels } from "./useRouterModels"
 import { useOpenRouterModelProviders } from "./useOpenRouterModelProviders"
 
 export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
-	const provider = apiConfiguration?.apiProvider || "anthropic"
+	const provider = apiConfiguration?.apiProvider || "makehub"
 	const openRouterModelId = provider === "openrouter" ? apiConfiguration?.openRouterModelId : undefined
 
 	const routerModels = useRouterModels()
 	const openRouterModelProviders = useOpenRouterModelProviders(openRouterModelId)
+
+	if (!apiConfiguration) {
+		return {
+			provider: "makehub" as ProviderName,
+			id: makehubDefaultModelId,
+			info: makehubDefaultModelInfo,
+		}
+	}
 
 	const { id, info } =
 		apiConfiguration &&
@@ -55,14 +65,12 @@ export const useSelectedModel = (apiConfiguration?: ProviderSettings) => {
 					routerModels: routerModels.data,
 					openRouterModelProviders: openRouterModelProviders.data,
 				})
-			: { id: anthropicDefaultModelId, info: undefined }
+			: { id: makehubDefaultModelId, info: makehubDefaultModelInfo }
 
 	return {
 		provider,
 		id,
 		info,
-		isLoading: routerModels.isLoading || openRouterModelProviders.isLoading,
-		isError: routerModels.isError || openRouterModelProviders.isError,
 	}
 }
 
@@ -212,9 +220,9 @@ function getSelectedModel({
 		// case "human-relay":
 		// case "fake-ai":
 		default: {
-			const id = apiConfiguration.apiModelId ?? anthropicDefaultModelId
-			const info = anthropicModels[id as keyof typeof anthropicModels]
-			return info ? { id, info } : { id: anthropicDefaultModelId, info: anthropicModels[anthropicDefaultModelId] }
+			const id = apiConfiguration.apiModelId ?? makehubDefaultModelId
+			const info = anthropicModels[id as keyof typeof anthropicModels] || makehubDefaultModelInfo
+			return info ? { id, info } : { id: makehubDefaultModelId, info: makehubDefaultModelInfo }
 		}
 	}
 }

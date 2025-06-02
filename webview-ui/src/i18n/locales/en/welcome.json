@@ -1,10 +1,14 @@
 {
-	"greeting": "Hi, I'm Roo!",
-	"introduction": "<strong>Roo Code is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, Roo Code requires an API key.",
+	"greeting": "Hi, I'm MakeHub!",
+	"introduction": "<strong>MakeHub is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, MakeHub requires an API key.",
 	"notice": "To get started, this extension needs an API provider.",
 	"start": "Let's go!",
 	"chooseProvider": "Choose an API provider to get started:",
 	"routers": {
+		"makehub": {
+			"description": "The best coding model, optimized by MakeHub",
+			"incentive": "Fast and reliable AI routing"
+		},
 		"requesty": {
 			"description": "Your optimized LLM router",
 			"incentive": "$1 free credit"
@@ -13,10 +17,11 @@
 			"description": "A unified interface for LLMs"
 		}
 	},
+	"startMakehub": "Get Started with MakeHub",
 	"startRouter": "Express Setup Through a Router",
 	"startCustom": "Bring Your Own API Key",
 	"telemetry": {
-		"title": "Help Improve Roo Code",
+		"title": "Help Improve MakeHub",
 		"anonymousTelemetry": "Send anonymous error and usage data to help us fix bugs and improve the extension. No code, prompts, or personal information is ever sent.",
 		"changeSettings": "You can always change this at the bottom of the <settingsLink>settings</settingsLink>",
 		"settings": "settings",
