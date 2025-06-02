@@ -1,6 +1,6 @@
-import type { ModelInfo, ProviderSettings } from "@roo-code/types"
+import { type ModelInfo, type ProviderSettings, ANTHROPIC_DEFAULT_MAX_TOKENS } from "@roo-code/types"
 
-import { ANTHROPIC_DEFAULT_MAX_TOKENS } from "../api/providers/constants"
+// ApiHandlerOptions
 
 export type ApiHandlerOptions = Omit<ProviderSettings, "apiProvider">
 
@@ -1944,6 +1944,7 @@ export const OPEN_ROUTER_REQUIRED_REASONING_BUDGET_MODELS = new Set([
 	"google/gemini-2.5-flash-preview-05-20:thinking",
 ])
 
+
 const routerNames = ["openrouter", "requesty", "glama", "unbound", "litellm", "makehub"] as const
 
 export type RouterName = (typeof routerNames)[number]
@@ -1958,9 +1959,13 @@ export function toRouterName(value?: string): RouterName {
 	throw new Error(`Invalid router name: ${value}`)
 }
 
+// RouterModels
+
 export type ModelRecord = Record<string, ModelInfo>
 
 export type RouterModels = Record<RouterName, ModelRecord>
+
+// Reasoning
 
 export const shouldUseReasoningBudget = ({
 	model,
@@ -1980,6 +1985,8 @@ export const shouldUseReasoningEffort = ({
 
 export const DEFAULT_HYBRID_REASONING_MODEL_MAX_TOKENS = 16_384
 export const DEFAULT_HYBRID_REASONING_MODEL_THINKING_TOKENS = 8_192
+
+// Max Tokens
 
 export const getModelMaxOutputTokens = ({
 	modelId,
@@ -2006,11 +2013,8 @@ export const getModelMaxOutputTokens = ({
 	return model.maxTokens ?? undefined
 }
 
-/**
- * Options for fetching models from different providers.
- * This is a discriminated union type where the provider property determines
- * which other properties are required.
- */
+// GetModelsOptions
+
 export type GetModelsOptions =
 	| { provider: "openrouter" }
 	| { provider: "glama" }

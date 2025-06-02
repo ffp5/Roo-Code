@@ -1,7 +1,7 @@
-import type { ProviderName, ProviderSettings, ModelInfo } from "@roo-code/types"
-
 import {
-	RouterModels,
+	type ProviderName,
+	type ProviderSettings,
+	type ModelInfo,
 	anthropicDefaultModelId,
 	anthropicModels,
 	bedrockDefaultModelId,
@@ -32,6 +32,7 @@ import {
 	litellmDefaultModelId,
 	makehubDefaultModelId,
 } from "@roo/api"
+
 
 import { useRouterModels } from "./useRouterModels"
 import { useOpenRouterModelProviders } from "./useOpenRouterModelProviders"
