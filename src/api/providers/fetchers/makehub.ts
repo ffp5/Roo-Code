@@ -94,7 +94,7 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 
 			modelRecord[fullModelId] = {
 				maxTokens: model.max_tokens ?? undefined,
-				contextWindow: model.context,
+				contextWindow: model.context * 1000, // MakeHub returns context in thousands (e.g., 200 = 200k tokens)
 				supportsImages: model.capabilities?.image_input ?? false,
 				supportsComputerUse: model.capabilities?.tool_calling ?? false,
 				supportsPromptCache: model.supports_prompt_cache ?? false,
@@ -104,7 +104,7 @@ export const getMakehubModels = async (apiKey?: string): Promise<ModelRecord> =>
 				cacheReadsPrice: model.cache_reads_price,
 				description: model.display_name,
 				tiers: model.tiers?.map((tier) => ({
-					contextWindow: tier.context_window,
+					contextWindow: tier.context_window * 1000, // Also multiply tier context windows
 					inputPrice: tier.input_price,
 					outputPrice: tier.output_price,
 					cacheWritesPrice: tier.cache_writes_price,

@@ -3,7 +3,7 @@
 	"displayName": "MakeHub - AI Code Assistant",
 	"description": "MakeHub is a universal API load balancer that routes your requests to the fastest, cheapest provider in real time",
 	"publisher": "Makehub",
-	"version": "0.0.10",
+	"version": "0.0.13",
 	"icon": "assets/icons/icon.png",
 	"galleryBanner": {
 		"color": "#617A91",
@@ -42,7 +42,8 @@
 		"chatgpt",
 		"sonnet",
 		"ai",
-		"llama"
+		"llama",
+		"roocode"
 	],
 	"activationEvents": [
 		"onLanguage",
